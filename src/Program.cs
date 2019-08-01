@@ -3,7 +3,8 @@ using Polly.Retry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-namespace PollyForNonHttpRequests
+
+namespace PollyTryDemo
 {
     class Program
     {
@@ -79,7 +80,7 @@ namespace PollyForNonHttpRequests
         {
             ErrorProneCode errorProneCode = new ErrorProneCode();
 
-            // Retry if the IEnumerable does not contain three items 
+            // Retry if the IEnumerable does not contain three items
             RetryPolicy<IEnumerable<int>> retryPolicyNeedsResponeWithTwoNumbers = Policy.HandleResult<IEnumerable<int>>(l => l.Count() != 3)
                .Retry(4, (response, retryCount) =>
                {
@@ -118,7 +119,7 @@ namespace PollyForNonHttpRequests
             RetryPolicy<Status> retryPolicyNeedsTrueResponse = Policy.HandleResult<Status>(s => s!= Status.Success)
                .Retry(4, (response, retryCount) =>
                {
-                   Console.WriteLine($"Got a reponse of {response.Result}  (expected Success), retrying {retryCount}");
+                   Console.WriteLine($"Got a reponse of {response.Result} (expected Success), retrying {retryCount}");
                });
 
             Status result = retryPolicyNeedsTrueResponse.Execute(() => errorProneCode.GetStatus());
@@ -128,10 +129,10 @@ namespace PollyForNonHttpRequests
         }
     }
 
-    public enum Status {
-        Success,
-        Fail,
-        Unknown,
-        ExceptionOccurred
-        };
+    // public enum Status {
+    //     Success,
+    //     Fail,
+    //     Unknown,
+    //     ExceptionOccurred
+    //     };
 }

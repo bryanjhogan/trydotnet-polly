@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace PollyForNonHttpRequests
+namespace PollyTryDemo
 {
     public class ErrorProneCode
     {
