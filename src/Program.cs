@@ -9,7 +9,7 @@ namespace PollyTryDemo
     class Program
     {
 
-        static void Main(string region = null,
+static void Main(string region = null,
             string session = null,
             string package = null,
             string project = null,
@@ -23,11 +23,36 @@ namespace PollyTryDemo
                 case "test":
                     Test();
                     break;
-                case "status":
-                    MyStatus();
+                case "retryIfIncorrectStatus":
+                    RetryIfIncorrectStatus();
+                    break;
+                case "retryIfException":
+                    RetryIfException();
                     break;
             }
         }
+        // static void Main(string region = null,
+        //     string session = null,
+        //     string package = null,
+        //     string project = null,
+        //     string[] args = null)
+        // {
+        //     switch(region)
+        //     {
+        //         case "BoolResponse":
+        //             BoolResponse();
+        //             break;
+        //         case "test":
+        //             Test();
+        //             break;
+        //         case "retryIfIncorrectStatus":
+        //             RetryIfIncorrectStatus();
+        //             break;
+        //         case "retryIfException":
+        //             RetryIfException();
+        //             break;
+        //     }
+        // }
 
         public static void Test()
         {
@@ -36,6 +61,40 @@ namespace PollyTryDemo
             #endregion
         }
 
+        public static void RetryIfException()
+        {
+            ErrorProneCode errorProneCode = new ErrorProneCode();
+            #region retryIfException
+
+            // Retry if an exception is thrown
+            var retryPolicy = Policy.Handle<Exception>()
+               .Retry(3, (exception, retryCount) =>
+               {
+                   Console.WriteLine($"{exception.GetType()} thrown, retrying {retryCount}");
+               });
+
+            int result = retryPolicy.Execute(() => errorProneCode.QueryTheDatabase());
+
+            Console.WriteLine($"Received reponse of {result}\n\n");
+            #endregion
+        }
+        public static void RetryIfIncorrectStatus()
+        {
+            ErrorProneCode errorProneCode = new ErrorProneCode();
+            #region retryIfIncorrectStatus
+
+            // Retry if the result is not a Success
+            RetryPolicy<Status> retryPolicy = Policy.HandleResult<Status>(s => s!= Status.Success)
+               .Retry(3, (response, retryCount) =>
+               {
+                   Console.WriteLine($"Received a reponse of {response.Result}, retrying {retryCount}");
+               });
+
+            Status result = retryPolicy.Execute(() => errorProneCode.GetStatus());
+
+            Console.WriteLine($"Received reponse of {result}\n\n");
+            #endregion
+        }
         // static void Main(string[] args)
         // {
         //     Program p = new Program();
@@ -54,7 +113,7 @@ namespace PollyTryDemo
             RetryPolicy retryIfException = Policy.Handle<Exception>()
                 .Retry(4, (exception, retryCount) =>
                 {
-                    Console.WriteLine($"Got a response of {exception.Message} (expected 0), retrying {retryCount}");
+                    Console.WriteLine($"Got a response of {exception} (expected 0), retrying {retryCount}");
                 });
 
             retryIfException.Execute(errorProneCode.DoSomethingThatMightThrowException);
@@ -71,7 +130,7 @@ namespace PollyTryDemo
                     Console.WriteLine($"Got a response of {response.Result} (expected 0), retrying {retryCount}");
                 });
 
-            int number = retryPolicyNeedsAResponseOfOne.Execute(() => errorProneCode.GetSomeNumber());
+            int number = retryPolicyNeedsAResponseOfOne.Execute(() => errorProneCode.QueryTheDatabase());
 
             Console.WriteLine($"Got expected reponse = {number}\n\n");
         }
@@ -110,29 +169,6 @@ namespace PollyTryDemo
             #endregion
         }
 
-        public static void MyStatus()
-        {
-            ErrorProneCode errorProneCode = new ErrorProneCode();
-            #region status
 
-            // Retry if the result is not true
-            RetryPolicy<Status> retryPolicyNeedsTrueResponse = Policy.HandleResult<Status>(s => s!= Status.Success)
-               .Retry(4, (response, retryCount) =>
-               {
-                   Console.WriteLine($"Got a reponse of {response.Result} (expected Success), retrying {retryCount}");
-               });
-
-            Status result = retryPolicyNeedsTrueResponse.Execute(() => errorProneCode.GetStatus());
-
-            Console.WriteLine($"Got expected reponse of {result}\n\n");
-            #endregion
-        }
     }
-
-    // public enum Status {
-    //     Success,
-    //     Fail,
-    //     Unknown,
-    //     ExceptionOccurred
-    //     };
 }

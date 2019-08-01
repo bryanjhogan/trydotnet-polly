@@ -5,7 +5,7 @@ namespace PollyTryDemo
 {
     public class ErrorProneCode
     {
-        int _getSomeNumberCounter = 0;
+        int _queryTheDatabaseCounter = 0;
         int _getListOfNumbersCounter = 0;
         int _getBoolCounter = 0;
         int _getStatusCounter = 0;
@@ -19,22 +19,22 @@ namespace PollyTryDemo
                 throw new Exception("Bad things happened");
             }
         }
-        public int GetSomeNumber()
+        public int QueryTheDatabase()
         {
-            _getSomeNumberCounter++;
-            if (_getSomeNumberCounter == 1)
+            _queryTheDatabaseCounter++;
+            if (_queryTheDatabaseCounter == 1)
             {
-                return 999;
+                throw new NullReferenceException();
             }
-            if (_getSomeNumberCounter == 2)
+            if (_queryTheDatabaseCounter == 2)
             {
-                throw new DivideByZeroException();
+                throw new InsufficientMemoryException();
             }
-            if (_getSomeNumberCounter == 3)
+            if (_queryTheDatabaseCounter == 3)
             {
-                return -999;
+                throw new StackOverflowException();
             }
-            if(_getSomeNumberCounter == 4)
+            if(_queryTheDatabaseCounter == 4)
             {
                 return 0;
             }
