@@ -13,6 +13,7 @@
 *.ppt
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
+.vscode/
 .git/
 # Build results
 [Dd]ebug/
