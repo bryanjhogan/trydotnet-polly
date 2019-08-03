@@ -36,15 +36,15 @@ namespace PollyTryDemo
             ErrorProneCode errorProneCode = new ErrorProneCode();
             #region retryIfException
 
-            var retryPolicy = Policy.Handle<Exception>()
-               .Retry(3, (exception, retryCount) =>
-               {
-                   Console.WriteLine($"{exception.GetType()} thrown, retrying {retryCount}");
-               });
+            RetryPolicy retryPolicy = Policy.Handle<Exception>()
+    .Retry(3, (exception, retryCount) =>
+    {
+        Console.WriteLine($"{exception.GetType()} thrown, retrying {retryCount}");
+    });
 
             int result = retryPolicy.Execute(() => errorProneCode.QueryTheDatabase());
 
-            Console.WriteLine($"Received reponse of {result}\n\n");
+            Console.WriteLine($"Received reponse of {result}");
             #endregion
         }
         public static void RetryIfIncorrectStatus()
@@ -53,14 +53,14 @@ namespace PollyTryDemo
             #region retryIfIncorrectStatus
 
             RetryPolicy<Status> retryPolicy = Policy.HandleResult<Status>(s => s!= Status.Success)
-               .Retry(3, (response, retryCount) =>
-               {
-                   Console.WriteLine($"Received a reponse of {response.Result}, retrying {retryCount}");
-               });
+    .Retry(3, (response, retryCount) =>
+    {
+        Console.WriteLine($"Received a reponse of {response.Result}, retrying {retryCount}");
+    });
 
             Status result = retryPolicy.Execute(() => errorProneCode.GetStatus());
 
-            Console.WriteLine($"Received reponse of {result}\n\n");
+            Console.WriteLine($"Received reponse of {result}");
             #endregion
         }
 
@@ -70,15 +70,15 @@ namespace PollyTryDemo
             #region retryIfIncorrectStatusOrException
 
             RetryPolicy<Status> retryPolicy = Policy.HandleResult<Status>(s => s!= Status.Success)
-                .Or<Exception>()
-                .Retry(3, (responseOrException, retryCount, x) =>
-                {
-                    Console.WriteLine($"Request failed, retrying {retryCount}");
-                });
+    .Or<Exception>()
+    .Retry(3, (responseOrException, retryCount, ctx) =>
+    {
+        Console.WriteLine($"Request failed, retrying {retryCount}");
+    });
 
             Status result = retryPolicy.Execute(() => errorProneCode.CallRemoteService());
 
-            Console.WriteLine($"Received reponse of {result}\n\n");
+            Console.WriteLine($"Received reponse of {result}");
             #endregion
         }
         
@@ -88,17 +88,17 @@ namespace PollyTryDemo
             #region waitAndRetry
 
             RetryPolicy<Status> retryPolicy = Policy.HandleResult<Status>(s => s!= Status.Success)
-               .WaitAndRetry(3,
-                            sleepDurationProvider: (retryCount) => TimeSpan.FromSeconds(retryCount),
-                            onRetry: (response, delay, retryCount, ctx) =>
-               {
-                   Console.WriteLine($"Received a reponse of {response.Result}.");
-                   Console.WriteLine($"Slept for {delay.Seconds} second(s) before retrying.");
-               });
+    .WaitAndRetry(3,
+                sleepDurationProvider: (retryCount) => TimeSpan.FromSeconds(retryCount),
+                onRetry: (response, delay, retryCount, ctx) =>
+    {
+        Console.WriteLine($"Received a reponse of {response.Result}.");
+        Console.WriteLine($"Slept for {delay.Seconds} second(s) before retrying.");
+    });
 
             Status result = retryPolicy.Execute(() => errorProneCode.GetStatus());
 
-            Console.WriteLine($"Received reponse of {result}\n\n");
+            Console.WriteLine($"Received reponse of {result}");
             #endregion
         }
         
