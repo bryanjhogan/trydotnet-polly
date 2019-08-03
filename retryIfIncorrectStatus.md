@@ -4,7 +4,6 @@
 The policy retries the request up to three times if an the result is not a success.
 
 ``` cs --region retryIfIncorrectStatus --source-file .\src\Program.cs --project .\src\PollyDemo.csproj 
-Console.WriteLine("status!");
 ```
 
 #### Next: [Combining Result and Exception Based Retries  &raquo;](./retryIfIncorrectStatusOrException.md) Previous: [Retrying When an Exception Occurs &laquo;](../retryIfException.md)

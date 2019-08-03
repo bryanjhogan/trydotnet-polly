@@ -36,7 +36,6 @@ namespace PollyTryDemo
             ErrorProneCode errorProneCode = new ErrorProneCode();
             #region retryIfException
 
-            // Retry if an exception is thrown
             var retryPolicy = Policy.Handle<Exception>()
                .Retry(3, (exception, retryCount) =>
                {
@@ -53,7 +52,6 @@ namespace PollyTryDemo
             ErrorProneCode errorProneCode = new ErrorProneCode();
             #region retryIfIncorrectStatus
 
-            // Retry if the result is not a Success
             RetryPolicy<Status> retryPolicy = Policy.HandleResult<Status>(s => s!= Status.Success)
                .Retry(3, (response, retryCount) =>
                {
@@ -71,7 +69,6 @@ namespace PollyTryDemo
             ErrorProneCode errorProneCode = new ErrorProneCode();
             #region retryIfIncorrectStatusOrException
 
-            // Retry if the result is not a Success
             RetryPolicy<Status> retryPolicy = Policy.HandleResult<Status>(s => s!= Status.Success)
                 .Or<Exception>()
                 .Retry(3, (responseOrException, retryCount, x) =>
@@ -90,7 +87,6 @@ namespace PollyTryDemo
             ErrorProneCode errorProneCode = new ErrorProneCode();
             #region waitAndRetry
 
-            // Retry if the result is not a Success
             RetryPolicy<Status> retryPolicy = Policy.HandleResult<Status>(s => s!= Status.Success)
                .WaitAndRetry(3,
                             sleepDurationProvider: (retryCount) => TimeSpan.FromSeconds(retryCount),
