@@ -14,15 +14,15 @@ namespace PollyTryDemo
             _queryTheDatabaseCounter++;
             if (_queryTheDatabaseCounter == 1)
             {
-                throw new NullReferenceException();
+                throw new NotImplementedException("Someone forgot to implement some code.");
             }
             if (_queryTheDatabaseCounter == 2)
             {
-                throw new InsufficientMemoryException();
+                throw new InsufficientMemoryException("You ran out of memory!");
             }
             if (_queryTheDatabaseCounter == 3)
             {
-                throw new StackOverflowException();
+                throw new StackOverflowException("Not the website.");
             }
             if(_queryTheDatabaseCounter == 4)
             {

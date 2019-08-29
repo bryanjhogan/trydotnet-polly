@@ -15,8 +15,12 @@ namespace PollyTryDemo
             string project = null,
             string[] args = null)
         {
+            region = "lettingItFail";
             switch(region)
             {
+                case "lettingItFail":
+                    LettingItFail();
+                    break;
                 case "retryIfException":
                     RetryIfException();
                     break;
@@ -30,6 +34,24 @@ namespace PollyTryDemo
                     WaitAndRetry();
                     break;
             }
+        }
+
+        public static void LettingItFail()
+        {
+            ErrorProneCode errorProneCode = new ErrorProneCode();
+            #region lettingItFail
+
+            try 
+            {
+                int result =  errorProneCode.QueryTheDatabase();
+                Console.WriteLine($"Received reponse of {result}");
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine($"{exception.GetType()} {exception.Message}");
+            }
+
+            #endregion
         }
         public static void RetryIfException()
         {
