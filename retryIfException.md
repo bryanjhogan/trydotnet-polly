@@ -1,7 +1,8 @@
 # Polly Retries Part 1
 
 ### Retrying When an Exception Occurs
-The policy retries the request up to three times if an exception occurs.
+Let's a simple Polly Retry policy, it will retry up to three times when an exception occurs.
+
 
 ``` cs --region retryIfException --source-file .\src\Program.cs --project .\src\PollyDemo.csproj 
 ```

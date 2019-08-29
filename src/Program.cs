@@ -15,7 +15,6 @@ namespace PollyTryDemo
             string project = null,
             string[] args = null)
         {
-            region = "lettingItFail";
             switch(region)
             {
                 case "lettingItFail":
@@ -41,15 +40,8 @@ namespace PollyTryDemo
             ErrorProneCode errorProneCode = new ErrorProneCode();
             #region lettingItFail
 
-            try 
-            {
-                int rowsWritten =  errorProneCode.WriteToSomeDb();
-                Console.WriteLine($"Received reponse of {rowsWritten}");
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine($"{exception.GetType()} {exception.Message}");
-            }
+            int rowsWritten =  errorProneCode.QueryTheDatabase();
+            Console.WriteLine($"Received reponse of {rowsWritten}");
 
             #endregion
         }
