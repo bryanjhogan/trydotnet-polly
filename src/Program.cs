@@ -43,8 +43,8 @@ namespace PollyTryDemo
 
             try 
             {
-                int result =  errorProneCode.QueryTheDatabase();
-                Console.WriteLine($"Received reponse of {result}");
+                int rowsWritten =  errorProneCode.WriteToSomeDb();
+                Console.WriteLine($"Received reponse of {rowsWritten}");
             }
             catch (Exception exception)
             {

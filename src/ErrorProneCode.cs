@@ -5,9 +5,33 @@ namespace PollyTryDemo
 {
     public class ErrorProneCode
     {
+        static int _writeToSomeDbCounter = 0;
         int _queryTheDatabaseCounter = 0;
         int _getStatusCounter = 0;
         int _callRemoteServiceCounter = 0;
+
+        public int WriteToSomeDb()
+        {
+            _writeToSomeDbCounter++; // seems to be an issue with static variables in try.net
+            if (_writeToSomeDbCounter %4 == 1)
+            {
+                throw new NotImplementedException("Someone forgot to implement some code.");
+            }
+            if (_writeToSomeDbCounter %4  == 2)
+            {
+                throw new InsufficientMemoryException("You ran out of memory!");
+            }
+            if (_writeToSomeDbCounter %4  == 3)
+            {
+                throw new StackOverflowException("The stack overflowed.");
+            }
+            if(_writeToSomeDbCounter %4 == 0)
+            {
+                throw new AccessViolationException("You don't have permission.");
+            }
+            return -1;
+        }
+
 
         public int QueryTheDatabase()
         {
