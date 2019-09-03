@@ -1,6 +1,8 @@
-# Polly Retries Part 3
+# Polly Retries Part 4
 
 ### Combining Result and Exception Based Retries
+You can combine handling of exceptions and results. 
+
 The policy retries the request up to three times if an the result is not a success or if an exception occurred.
 
 ``` cs --region retryIfIncorrectStatusOrException --source-file .\src\Program.cs --project .\src\PollyDemo.csproj 

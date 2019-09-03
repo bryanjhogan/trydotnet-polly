@@ -1,7 +1,7 @@
-# Polly Retries Part 4
+# Polly Retries Part 5
 
 ### Waiting Before Retrying
-The wait and retry policy adds a delay before retrying, this is especially useful for transient faults.
+There are many scenarios where adding a delay before retrying a requst will be beneficial. The Wait and Retry policy adds a delay before retrying, this is especially useful for transient faults.
 
 ``` cs --region waitAndRetry --source-file .\src\Program.cs --project .\src\PollyDemo.csproj 
 ```

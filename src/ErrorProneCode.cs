@@ -26,17 +26,17 @@ namespace PollyTryDemo
             _queryTheDatabaseCounter++;
             if (_queryTheDatabaseCounter == 1)
             {
-                throw new Exception("An error occurred.");
+                throw new Exception("An error occurred, I hope you have Polly!");
             }
             if (_queryTheDatabaseCounter == 2)
             {
                 throw new InsufficientMemoryException("You ran out of memory!");
             }
-            if (_queryTheDatabaseCounter == 3)
-            {
-                throw new StackOverflowException("Not the website.");
-            }
-            if(_queryTheDatabaseCounter == 4)
+            // if (_queryTheDatabaseCounter == 3)
+            // {
+            //     throw new StackOverflowException("Not the website.");
+            // }
+            if(_queryTheDatabaseCounter == 3)
             {
                 return 0;
             }
