@@ -2,24 +2,27 @@
 using Polly.CircuitBreaker;
 using Polly.Fallback;
 using Polly.Retry;
+using Polly.Caching.Memory;
+using Polly.Caching;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
+// using System.Runtime.Caching;
+using Microsoft.Extensions.Caching.Memory;
+
 
 namespace PollyTryDemo
 {
     class Program
     {
-
         static void Main(string region = null,
             string session = null,
             string package = null,
             string project = null,
             string[] args = null)
         {
-            //AdvancedCircuitBreaker();
             switch(region)
             {
                 case "lettingItFail":
@@ -49,7 +52,32 @@ namespace PollyTryDemo
                 case "advancedCircuitBreaker":
                     AdvancedCircuitBreaker();
                     break;
+                case "caching":
+                    Caching();
+                    break;
             }
+        }
+
+        public static void Caching()
+        {
+            ErrorProneCode errorProneCode = new ErrorProneCode();
+            var memoryCache = new MemoryCache(new MemoryCacheOptions());
+            var memoryCacheProvider = new MemoryCacheProvider(memoryCache);
+
+            
+            #region caching
+            CachePolicy<int> cachePolicy =
+    Policy.Cache<int>(memoryCacheProvider, TimeSpan.FromSeconds(1.5));
+ 
+            for (int loop = 1; loop <= 10; loop++)
+            {
+                int result = cachePolicy.Execute(context => errorProneCode.GetSomeNumberThatMightBeCacheable(), new Context("ContextKey"));
+                
+                Console.WriteLine($"result={result}. cachePolicy executed {loop} time(s). GetSomeNumberThatMightBeCacheable method really called {result} time(s).");
+                Thread.Sleep(500);
+            }
+
+            #endregion
         }
 
         public static void BasicCircuitBreaker()
@@ -223,69 +251,5 @@ namespace PollyTryDemo
             #endregion
         }
         
-        // private void CheckForException()
-        // {
-        //     ErrorProneCode errorProneCode = new ErrorProneCode();
-
-        //     RetryPolicy retryIfException = Policy.Handle<Exception>()
-        //         .Retry(4, (exception, retryCount) =>
-        //         {
-        //             Console.WriteLine($"Got a response of {exception} (expected 0), retrying {retryCount}");
-        //         });
-
-        //     retryIfException.Execute(errorProneCode.DoSomethingThatMightThrowException);
-        // }
-        // private void CheckForNonZeroOrException()
-        // {
-        //     ErrorProneCode errorProneCode = new ErrorProneCode();
-
-        //     // Retry if the response is not 0 or there is a DivideByZeroException
-        //     RetryPolicy<int> retryPolicyNeedsAResponseOfOne = Policy.HandleResult<int>(i => i != 0)
-        //         .Or<DivideByZeroException>()
-        //         .Retry(4, (response, retryCount) =>
-        //         {
-        //             Console.WriteLine($"Got a response of {response.Result} (expected 0), retrying {retryCount}");
-        //         });
-
-        //     int number = retryPolicyNeedsAResponseOfOne.Execute(() => errorProneCode.QueryTheDatabase());
-
-        //     Console.WriteLine($"Got expected reponse = {number}\n\n");
-        // }
-
-        // private void CheckingSizeOfReturnedList()
-        // {
-        //     ErrorProneCode errorProneCode = new ErrorProneCode();
-
-        //     // Retry if the IEnumerable does not contain three items
-        //     RetryPolicy<IEnumerable<int>> retryPolicyNeedsResponeWithTwoNumbers = Policy.HandleResult<IEnumerable<int>>(l => l.Count() != 3)
-        //        .Retry(4, (response, retryCount) =>
-        //        {
-        //            Console.WriteLine($"Got a response with {response.Result.Count()} entries (expected 3), retrying {retryCount}");
-        //        });
-
-        //     var numbers = retryPolicyNeedsResponeWithTwoNumbers.Execute(() => errorProneCode.GetListOfNumbers());
-
-        //     Console.WriteLine($"Got expected response of {numbers.Count()} entries\n\n");
-        // }
-
-        // public static void BoolResponse()
-        // {
-        //     #region BoolResponse
-        //     ErrorProneCode errorProneCode = new ErrorProneCode();
-
-        //     // Retry if the result is not true
-        //     RetryPolicy<bool> retryPolicyNeedsTrueResponse = Policy.HandleResult<bool>(b => b != true)
-        //        .Retry(4, (response, retryCount) =>
-        //        {
-        //            Console.WriteLine($"Got a response of {response.Result} entries (expected true), retrying {retryCount}");
-        //        });
-
-        //     bool result = retryPolicyNeedsTrueResponse.Execute(() => errorProneCode.GetBool());
-
-        //     Console.WriteLine($"Got expected response of {result}\n\n");
-        //     #endregion
-        // }
-
-
     }
 }

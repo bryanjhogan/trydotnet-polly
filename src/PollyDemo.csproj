@@ -9,6 +9,10 @@
     <PackageReference Include="System.CommandLine.DragonFruit" Version="0.3.0-alpha.19317.1" />
     <PackageReference Include="System.CommandLine.Experimental" Version="0.3.0-alpha.19317.1" />
     <PackageReference Include="Polly" Version="7.1.0" />
+    <PackageReference Include="Polly.Caching.Memory" Version="3.0.1" />
+    <PackageReference Include="System.Runtime.Caching" Version="4.6.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.0.0-preview9.19423.4" />
+    
   </ItemGroup>
 
 </Project>

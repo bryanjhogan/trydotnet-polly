@@ -20,3 +20,4 @@
 - [Fallbacks 2](fallingBackAndReturningADefault.md)
 - [Basic Circuit Breaker](basicCircuitBreaker.md)
 - [Advanced Circuit Breaker](advancedCircuitBreaker.md)
+- [Caching](caching.md)
