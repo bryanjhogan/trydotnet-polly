@@ -5,4 +5,4 @@ The Bulkhead Isolation policy lets you restrict the amount of resources any part
 ``` cs --region bulkhead --source-file .\src\Program.cs --project .\src\PollyDemo.csproj 
 ```
 
-#### Next: [Timeout &raquo;](../timeout.md) Previous: [Caching  &laquo;](../caching.md)
+####  Previous: [Caching  &laquo;](../caching.md)

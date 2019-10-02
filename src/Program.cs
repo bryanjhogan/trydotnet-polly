@@ -25,6 +25,7 @@ namespace PollyTryDemo
             string project = null,
             string[] args = null)
         {
+            //Timeout();
             switch(region)
             {
                 case "lettingItFail":
@@ -106,24 +107,22 @@ namespace PollyTryDemo
 
             #region timeout
 
-            //var timeoutPolicyAsync = Policy.TimeoutAsync(1, TimeoutStrategy.Pessimistic, OnTimeoutAsync); //TODO: check strategy
-            var timeoutPolicy = Policy.Timeout(1, TimeoutStrategy.Pessimistic, OnTimeout); //TODO: check strategy
+            var timeoutPolicy = Policy.Timeout(1, TimeoutStrategy.Pessimistic, OnTimeout); 
             
-            //int resultAsync = await timeoutPolicyAsync.ExecuteAsync( async () => await errorProneCode.SomeSlowComplexProcessAsync());
-            int result = timeoutPolicy.Execute(  () => errorProneCode.SomeSlowComplexProcess());
+            int result = timeoutPolicy.Execute( () => errorProneCode.SomeSlowComplexProcess());
             Console.WriteLine($"{result}");
             #endregion
         }
 
         private static Task OnTimeoutAsync(Context context, TimeSpan timeSpan, Task task)
         {
-            Console.WriteLine("Polly timout policy terminated request because it was taking too long");
+            Console.WriteLine("Polly timeout policy terminated request because it was taking too long.");
             return Task.CompletedTask;
         }
 
         private static void OnTimeout(Context context, TimeSpan timeSpan, Task task)
         {
-            Console.WriteLine("Polly timout policy terminated request because it was taking too long");
+            Console.WriteLine("Polly timeout policy terminated request because it was taking too long.");
         }
         private static void OnBulkheadRejected(Context context)
         {
@@ -164,9 +163,9 @@ namespace PollyTryDemo
             for (int loop = 1; loop <= 3; loop++)
             {
                 Status statusAResult = circuitBreakerPolicy.Execute(() => errorProneCode.TargetA());
-                Console.WriteLine($"Target A (call {loop})  status: {statusAResult}");
+                Console.WriteLine($"Target A (call {loop}) status: {statusAResult}.");
                 Status statusBResult = circuitBreakerPolicy.Execute(() => errorProneCode.TargetB());
-                Console.WriteLine($"Target B (call {loop}) status: {statusBResult}");
+                Console.WriteLine($"Target B (call {loop}) status: {statusBResult}.");
             }
 
             #endregion
@@ -177,7 +176,7 @@ namespace PollyTryDemo
             ErrorProneCode errorProneCode = new ErrorProneCode();
 
             #region advancedCircuitBreaker
-            Console.WriteLine("A  BrokenCircuitException is expected in this demo.");
+            Console.WriteLine("A BrokenCircuitException is expected in this demo.");
 
             var advancedCircuitBreakerPolicy = Policy
                 .HandleResult<Status>(r => r == Status.Fail)
@@ -186,9 +185,9 @@ namespace PollyTryDemo
             for (int loop = 1; loop <= 4; loop++)
             {
                 Status statusAResult = advancedCircuitBreakerPolicy.Execute(() => errorProneCode.TargetA());
-                Console.WriteLine($"Target A (call {loop})  status: {statusAResult}");
+                Console.WriteLine($"Target A (call {loop}) status: {statusAResult}.");
                 Status statusBResult = advancedCircuitBreakerPolicy.Execute(() => errorProneCode.TargetB());
-                Console.WriteLine($"Target B (call {loop}) status: {statusBResult}");
+                Console.WriteLine($"Target B (call {loop}) status: {statusBResult}.");
                 Thread.Sleep(1000);
             }
 
@@ -237,7 +236,7 @@ namespace PollyTryDemo
     .Fallback<int>(0);
 
             int quantity = fallbackPolicy.Execute(() => errorProneCode.GetQuantityAvailable());
-            Console.WriteLine($"{quantity} items available");
+            Console.WriteLine($"{quantity} items available.");
             #endregion
         }
         public static void LettingItFail()
@@ -246,7 +245,7 @@ namespace PollyTryDemo
             #region lettingItFail
 
             int rowsWritten =  errorProneCode.QueryTheDatabase();
-            Console.WriteLine($"Received response of {rowsWritten}");
+            Console.WriteLine($"Received response of {rowsWritten}.");
 
             #endregion
         }
@@ -258,7 +257,7 @@ namespace PollyTryDemo
             RetryPolicy retryPolicy = Policy.Handle<Exception>()
     .Retry(3, (exception, retryCount) =>
     {
-        Console.WriteLine($"{exception.GetType()} thrown, retrying {retryCount}");
+        Console.WriteLine($"{exception.GetType()} thrown, retrying {retryCount}.");
     });
 
             int result = retryPolicy.Execute(() => errorProneCode.QueryTheDatabase());
@@ -274,7 +273,7 @@ namespace PollyTryDemo
             RetryPolicy<Status> retryPolicy = Policy.HandleResult<Status>(s => s!= Status.Success)
     .Retry(3, (response, retryCount) =>
     {
-        Console.WriteLine($"Received a response of {response.Result}, retrying {retryCount}");
+        Console.WriteLine($"Received a response of {response.Result}, retrying {retryCount}.");
     });
 
             Status result = retryPolicy.Execute(() => errorProneCode.GetStatus());
@@ -292,12 +291,12 @@ namespace PollyTryDemo
     .Or<Exception>()
     .Retry(3, (responseOrException, retryCount, ctx) =>
     {
-        Console.WriteLine($"Request failed, retrying {retryCount}");
+        Console.WriteLine($"Request failed, retrying {retryCount}.");
     });
 
             Status result = retryPolicy.Execute(() => errorProneCode.CallRemoteService());
 
-            Console.WriteLine($"Received response of {result}");
+            Console.WriteLine($"Received response of {result},");
             #endregion
         }
         
@@ -317,7 +316,7 @@ namespace PollyTryDemo
 
             Status result = retryPolicy.Execute(() => errorProneCode.GetStatus());
 
-            Console.WriteLine($"Received response of {result}");
+            Console.WriteLine($"Received response of {result}.");
             #endregion
         }
         

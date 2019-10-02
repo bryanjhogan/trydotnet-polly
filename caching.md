@@ -6,4 +6,4 @@ The Cache policy lets you store and retrieve a result from an in memory, or dist
 ``` cs --region caching --source-file .\src\Program.cs --project .\src\PollyDemo.csproj 
 ```
 
-#### Next: [Bulkhead Isolation &raquo;](../bulkheadIsolation.md) Previous: [Advance Circuit Breaker  &laquo;](../advancedCircuitBreaker.md)
+#### Next: [Bulkhead Isolation &raquo;](../bulkheadIsolation.md) Previous: [Advanced Circuit Breaker  &laquo;](../advancedCircuitBreaker.md)
