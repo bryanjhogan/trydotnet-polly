@@ -25,7 +25,6 @@ namespace PollyTryDemo
             string project = null,
             string[] args = null)
         {
-            await Bulkhead();
             switch(region)
             {
                 case "lettingItFail":
@@ -62,7 +61,7 @@ namespace PollyTryDemo
                     Caching();
                     break;
                 case "bulkhead":
-                    await Bulkhead();
+                    Bulkhead();
                     break;
             }
         }
@@ -289,10 +288,10 @@ namespace PollyTryDemo
             #endregion
         }
 
-        public static async Task Bulkhead()
+        public static void Bulkhead()
         {
             ErrorProneCode errorProneCode = new ErrorProneCode();
-            await Task.Delay(1);
+
             #region bulkhead
 
             AsyncBulkheadPolicy bulkheadPolicyAsync = Policy.BulkheadAsync(2, 3, OnBulkheadRejectedAsync);
