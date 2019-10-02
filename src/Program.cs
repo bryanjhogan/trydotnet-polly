@@ -11,13 +11,15 @@ using System.Net.Http;
 using System.Threading;
 // using System.Runtime.Caching;
 using Microsoft.Extensions.Caching.Memory;
-
+using Polly.Bulkhead;
+using Polly.Timeout;
+using System.Threading.Tasks;
 
 namespace PollyTryDemo
 {
     class Program
     {
-        static void Main(string region = null,
+        static async Task Main(string region = null,
             string session = null,
             string package = null,
             string project = null,
@@ -55,15 +57,83 @@ namespace PollyTryDemo
                 case "caching":
                     Caching();
                     break;
+                case "timeout":
+                    Timeout();
+                    break;
+                case "bulkhead":
+                    Bulkhead();
+                    break;
             }
         }
 
+        public static async Task Bulkhead()
+        {
+            ErrorProneCode errorProneCode = new ErrorProneCode();
+            #region bulkhead
+
+            AsyncBulkheadPolicy bulkheadPolicyAsync = Policy.BulkheadAsync(2, 3, OnBulkheadRejectedAsync);
+            
+            for (int loop = 0; loop < 10; loop++)
+            {
+                var result =  bulkheadPolicyAsync.ExecuteAsync( async () => await errorProneCode.SomeSlowComplexProcessAsync());
+            }
+           
+            #endregion
+        }
+
+        public static void BulkheadXXX()
+        {
+            ErrorProneCode errorProneCode = new ErrorProneCode();
+            #region bulkheadxxx
+
+            BulkheadPolicy bulkheadPolicy = Policy.Bulkhead(2, 3, OnBulkheadRejected);
+            Parallel.For(0, 6, (index) => 
+            {
+                int result = bulkheadPolicy.Execute(() => errorProneCode.SomeSlowComplexProcess());
+                Thread.Sleep(500);
+            });
+            #endregion
+        }
+        private static Task OnBulkheadRejectedAsync(Context context)
+        {
+            Console.WriteLine("Execution and queue slots full. Requests will be rejected.");
+            return Task.CompletedTask;
+        }
+
+        public static async Task Timeout()
+        {
+            ErrorProneCode errorProneCode = new ErrorProneCode();
+
+            #region timeout
+
+            //var timeoutPolicyAsync = Policy.TimeoutAsync(1, TimeoutStrategy.Pessimistic, OnTimeoutAsync); //TODO: check strategy
+            var timeoutPolicy = Policy.Timeout(1, TimeoutStrategy.Pessimistic, OnTimeout); //TODO: check strategy
+            
+            //int resultAsync = await timeoutPolicyAsync.ExecuteAsync( async () => await errorProneCode.SomeSlowComplexProcessAsync());
+            int result = timeoutPolicy.Execute(  () => errorProneCode.SomeSlowComplexProcess());
+            Console.WriteLine($"{result}");
+            #endregion
+        }
+
+        private static Task OnTimeoutAsync(Context context, TimeSpan timeSpan, Task task)
+        {
+            Console.WriteLine("Polly timout policy terminated request because it was taking too long");
+            return Task.CompletedTask;
+        }
+
+        private static void OnTimeout(Context context, TimeSpan timeSpan, Task task)
+        {
+            Console.WriteLine("Polly timout policy terminated request because it was taking too long");
+        }
+        private static void OnBulkheadRejected(Context context)
+        {
+            Console.WriteLine("Execution and queue slots full. Requests will be rejected.");
+        }
         public static void Caching()
         {
             ErrorProneCode errorProneCode = new ErrorProneCode();
             var memoryCache = new MemoryCache(new MemoryCacheOptions());
             var memoryCacheProvider = new MemoryCacheProvider(memoryCache);
-
             
             #region caching
             CachePolicy<int> cachePolicy =

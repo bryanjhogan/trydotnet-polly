@@ -21,3 +21,5 @@
 - [Basic Circuit Breaker](basicCircuitBreaker.md)
 - [Advanced Circuit Breaker](advancedCircuitBreaker.md)
 - [Caching](caching.md)
+- [Bulkhead Isolation](bulkheadIsolation.md)
+- [Timeout](timeout.md)

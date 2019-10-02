@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace PollyTryDemo
 {
@@ -13,7 +15,21 @@ namespace PollyTryDemo
         int _circuitBeakerTargetBCounter = 0;
 
         int _getSomeNumberThatMightBeCacheable = 0;
-        
+
+        public int SomeSlowComplexProcess()
+        {
+            Console.WriteLine("Starting to execute SomeSlowComplexProcess()...");
+            Thread.Sleep(3000);
+            Console.WriteLine("Finished executing SomeSlowComplexProcess()");
+            return 0;
+        }        
+
+        public async Task<int> SomeSlowComplexProcessAsync()
+        {
+            Console.WriteLine("Executing SomeSlowComplexProcess()");
+            await Task.Delay(5000);
+            return 0;
+        }        
         public Status TargetA()
         {
             _circuitBeakerTargetACounter ++; 
