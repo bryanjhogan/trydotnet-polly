@@ -62,7 +62,7 @@ namespace PollyTryDemo
                     Caching();
                     break;
                 case "bulkhead":
-                    Bulkhead();
+                    await Bulkhead();
                     break;
             }
         }
@@ -292,13 +292,14 @@ namespace PollyTryDemo
         public static async Task Bulkhead()
         {
             ErrorProneCode errorProneCode = new ErrorProneCode();
+            await Task.Delay(1);
             #region bulkhead
 
             AsyncBulkheadPolicy bulkheadPolicyAsync = Policy.BulkheadAsync(2, 3, OnBulkheadRejectedAsync);
             
             for (int loop = 0; loop < 10; loop++)
             {
-                var result =  bulkheadPolicyAsync.ExecuteAsync( async () => await errorProneCode.SomeSlowComplexProcessAsync());
+                var result = bulkheadPolicyAsync.ExecuteAsync( async () => await errorProneCode.SomeSlowComplexProcessAsync());
             }
            
             #endregion
