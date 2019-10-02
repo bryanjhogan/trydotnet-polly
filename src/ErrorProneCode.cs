@@ -10,7 +10,6 @@ namespace PollyTryDemo
         int _queryTheDatabaseCounter = 0;
         int _getStatusCounter = 0;
         int _callRemoteServiceCounter = 0;
-
         int _circuitBeakerTargetACounter = 0;
         int _circuitBeakerTargetBCounter = 0;
 
@@ -49,7 +48,6 @@ namespace PollyTryDemo
             }
             return Status.Success;
         }
-
 
         public int WriteToSomeDb()
         {
