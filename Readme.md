@@ -23,3 +23,4 @@
 - [Advanced Circuit Breaker](advancedCircuitBreaker.md)
 - [Caching](caching.md)
 - [Bulkhead Isolation](bulkheadIsolation.md)
+- [Policy Wraps](wrap.md)

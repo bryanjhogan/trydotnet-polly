@@ -107,7 +107,11 @@ namespace PollyTryDemo
             }
             return Status.Fail;
         }
-
+        public Status GetOtherStatus()
+        {
+            return Status.Fail;
+        }
+        
         public Status CallRemoteService()
         {
             _callRemoteServiceCounter++;

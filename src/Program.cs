@@ -63,7 +63,9 @@ namespace PollyTryDemo
                 case "bulkhead":
                     Bulkhead();
                     break;
-            }
+                case "wrap":
+                    Wrap();
+                    break;            }
         }
 
         public static void LettingItFail()
@@ -93,8 +95,8 @@ namespace PollyTryDemo
             Console.WriteLine($"Received response of {result}");
             #endregion
         }
-
-       public static void RetryIfIncorrectStatus()
+       
+        public static void RetryIfIncorrectStatus()
         {
             ErrorProneCode errorProneCode = new ErrorProneCode();
             #region retryIfIncorrectStatus
@@ -308,6 +310,30 @@ namespace PollyTryDemo
         {
             Console.WriteLine("Execution and queue slots full. Requests will be rejected.");
             return Task.CompletedTask;
+        }
+
+        public static void Wrap()
+        {
+            ErrorProneCode errorProneCode = new ErrorProneCode();
+            #region wrap
+        
+            RetryPolicy<Status> retryPolicy = Policy.HandleResult<Status>(s => s!= Status.Success)
+    .Retry(3, (response, retryCount) =>
+    {
+        Console.WriteLine($"Received a response of {response.Result}, retrying {retryCount}.");
+    });
+
+            var fallbackPolicy = Policy.HandleResult<Status>( s => s==Status.Fail)
+                .Fallback(() => Status.Unknown);
+    
+            var wrapPolicy = Policy.Wrap(fallbackPolicy, retryPolicy);
+
+            Status result = wrapPolicy.Execute(() => errorProneCode.GetOtherStatus());
+            
+            Console.WriteLine($"Status: {result}.");
+
+            #endregion
+
         }
     }
 }
