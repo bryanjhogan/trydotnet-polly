@@ -12,7 +12,6 @@ namespace PollyTryDemo
         int _callRemoteServiceCounter = 0;
         int _circuitBeakerTargetACounter = 0;
         int _circuitBeakerTargetBCounter = 0;
-
         int _getSomeNumberThatMightBeCacheable = 0;
 
         public int SomeSlowComplexProcess()
@@ -23,12 +22,13 @@ namespace PollyTryDemo
             return 0;
         }        
 
-        public async Task<int> SomeSlowComplexProcessAsync()
+        public async Task<int> SomeSlowComplexProcessAsync(int num)
         {
-            Console.WriteLine("Executing SomeSlowComplexProcess()");
-            await Task.Delay(5000);
+            Console.WriteLine($"\t\tExecuting SomeSlowComplexProcessAsync({num})");
+            await Task.Delay(1000);
             return 0;
-        }        
+        }      
+
         public Status TargetA()
         {
             _circuitBeakerTargetACounter ++; 
@@ -62,7 +62,6 @@ namespace PollyTryDemo
         public void MakeRequestToADeadService(){
             throw new Exception("An error occurred, I hope you have Polly!");
         }
-
         
         public int GetQuantityAvailable(){
             throw new Exception("An error occurred, I hope you have Polly!");
@@ -74,6 +73,7 @@ namespace PollyTryDemo
             Console.WriteLine("GetSomeNumberThatMightBeCacheable method called, returned value will be cached.");
             return _getSomeNumberThatMightBeCacheable;
         }
+
         public int QueryTheDatabase()
         {
             _queryTheDatabaseCounter++;
@@ -107,6 +107,7 @@ namespace PollyTryDemo
             }
             return Status.Fail;
         }
+        
         public Status GetOtherStatus()
         {
             return Status.Fail;

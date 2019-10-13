@@ -9,6 +9,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Polly.Bulkhead;
 using Polly.Timeout;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace PollyTryDemo
 {
@@ -20,7 +21,7 @@ namespace PollyTryDemo
             string project = null,
             string[] args = null)
         {
-            switch(region)
+            switch (region)
             {
                 case "lettingItFail":
                     LettingItFail();
@@ -40,7 +41,7 @@ namespace PollyTryDemo
                 case "fallingBack":
                     FallingBack();
                     break;
-               case "fallingBackAndReturningADefault":
+                case "fallingBackAndReturningADefault":
                     FallingBackAndReturningADefault();
                     break;
                 case "timeout":
@@ -56,11 +57,12 @@ namespace PollyTryDemo
                     Caching();
                     break;
                 case "bulkhead":
-                    Bulkhead();
+                    await Bulkhead();
                     break;
                 case "wrap":
                     Wrap();
-                    break;            }
+                    break;
+            }
         }
 
         public static void LettingItFail()
@@ -68,7 +70,7 @@ namespace PollyTryDemo
             ErrorProneCode errorProneCode = new ErrorProneCode();
             #region lettingItFail
 
-            int rowsWritten =  errorProneCode.QueryTheDatabase();
+            int rowsWritten = errorProneCode.QueryTheDatabase();
             Console.WriteLine($"Received response of {rowsWritten}.");
 
             #endregion
@@ -90,13 +92,13 @@ namespace PollyTryDemo
             Console.WriteLine($"Received response of {result}");
             #endregion
         }
-       
+
         public static void RetryIfIncorrectStatus()
         {
             ErrorProneCode errorProneCode = new ErrorProneCode();
             #region retryIfIncorrectStatus
 
-            RetryPolicy<Status> retryPolicy = Policy.HandleResult<Status>(s => s!= Status.Success)
+            RetryPolicy<Status> retryPolicy = Policy.HandleResult<Status>(s => s != Status.Success)
     .Retry(3, (response, retryCount) =>
     {
         Console.WriteLine($"Received a response of {response.Result}, retrying {retryCount}.");
@@ -113,7 +115,7 @@ namespace PollyTryDemo
             ErrorProneCode errorProneCode = new ErrorProneCode();
             #region retryIfIncorrectStatusOrException
 
-            RetryPolicy<Status> retryPolicy = Policy.HandleResult<Status>(s => s!= Status.Success)
+            RetryPolicy<Status> retryPolicy = Policy.HandleResult<Status>(s => s != Status.Success)
     .Or<Exception>()
     .Retry(3, (responseOrException, retryCount, ctx) =>
     {
@@ -125,13 +127,13 @@ namespace PollyTryDemo
             Console.WriteLine($"Received response of {result},");
             #endregion
         }
-        
+
         public static void WaitAndRetry()
         {
             ErrorProneCode errorProneCode = new ErrorProneCode();
             #region waitAndRetry
 
-            RetryPolicy<Status> retryPolicy = Policy.HandleResult<Status>(s => s!= Status.Success)
+            RetryPolicy<Status> retryPolicy = Policy.HandleResult<Status>(s => s != Status.Success)
     .WaitAndRetry(3,
     sleepDurationProvider: (retryCount) => TimeSpan.FromSeconds(retryCount),
     onRetry: (response, delay, retryCount, ctx) =>
@@ -152,14 +154,15 @@ namespace PollyTryDemo
             #region fallingBack
 
             FallbackPolicy fallbackPolicy = Policy.Handle<Exception>()
-    .Fallback(() => PageAnAdmin() );
+    .Fallback(() => PageAnAdmin());
 
             fallbackPolicy.Execute(() => errorProneCode.MakeRequestToADeadService());
 
             #endregion
         }
 
-        private static void PageAnAdmin(){
+        private static void PageAnAdmin()
+        {
             Console.WriteLine($"An exception occurred and the fallback policy kicked in, let me page someone for you...");
         }
         public static void FallingBackAndReturningADefault()
@@ -174,7 +177,7 @@ namespace PollyTryDemo
             int quantity = fallbackPolicy.Execute(() => errorProneCode.GetQuantityAvailable());
             Console.WriteLine($"{quantity} items available.");
             #endregion
-        }        
+        }
 
         public static void Timeout()
         {
@@ -182,9 +185,9 @@ namespace PollyTryDemo
 
             #region timeout
 
-            var timeoutPolicy = Policy.Timeout(1, TimeoutStrategy.Pessimistic, OnTimeout); 
-            
-            int result = timeoutPolicy.Execute( () => errorProneCode.SomeSlowComplexProcess());
+            var timeoutPolicy = Policy.Timeout(1, TimeoutStrategy.Pessimistic, OnTimeout);
+
+            int result = timeoutPolicy.Execute(() => errorProneCode.SomeSlowComplexProcess());
             Console.WriteLine($"{result}");
             #endregion
         }
@@ -192,10 +195,6 @@ namespace PollyTryDemo
         private static void OnTimeout(Context context, TimeSpan timeSpan, Task task)
         {
             Console.WriteLine("Polly's timeout policy terminated request because it was taking too long.");
-        }
-        private static void OnBulkheadRejected(Context context)
-        {
-            Console.WriteLine("Execution and queue slots full. Requests will be rejected.");
         }
 
         public static void BasicCircuitBreaker()
@@ -229,7 +228,7 @@ namespace PollyTryDemo
 
             var advancedCircuitBreakerPolicy = Policy
                 .HandleResult<Status>(r => r == Status.Fail)
-                .AdvancedCircuitBreaker(.5,  TimeSpan.FromSeconds(3), 6, TimeSpan.FromSeconds(5), OnBreak, OnReset, OnHalfOpen );
+                .AdvancedCircuitBreaker(.5, TimeSpan.FromSeconds(3), 6, TimeSpan.FromSeconds(5), OnBreak, OnReset, OnHalfOpen);
 
             for (int loop = 1; loop <= 4; loop++)
             {
@@ -263,15 +262,15 @@ namespace PollyTryDemo
             ErrorProneCode errorProneCode = new ErrorProneCode();
             var memoryCache = new MemoryCache(new MemoryCacheOptions());
             var memoryCacheProvider = new MemoryCacheProvider(memoryCache);
-            
+
             #region caching
             CachePolicy<int> cachePolicy =
     Policy.Cache<int>(memoryCacheProvider, TimeSpan.FromSeconds(1.5));
- 
+
             for (int loop = 1; loop <= 10; loop++)
             {
                 int result = cachePolicy.Execute(context => errorProneCode.GetSomeNumberThatMightBeCacheable(), new Context("ContextKey"));
-                
+
                 Console.WriteLine($"result={result}. cachePolicy executed {loop} time(s). GetSomeNumberThatMightBeCacheable method really called {result} time(s).");
                 Thread.Sleep(500);
             }
@@ -279,25 +278,47 @@ namespace PollyTryDemo
             #endregion
         }
 
-        public static void Bulkhead()
+        public static async Task Bulkhead()
         {
-            ErrorProneCode errorProneCode = new ErrorProneCode();
+            ErrorProneCode complexCode = new ErrorProneCode();
+            List<Task> tasks = new List<Task>();
 
             #region bulkhead
 
-            AsyncBulkheadPolicy bulkheadPolicyAsync = Policy.BulkheadAsync(2, 3, OnBulkheadRejectedAsync);
-            
+            AsyncBulkheadPolicy bulkheadPolicyAsync = Policy.BulkheadAsync(1, 2, OnBulkheadRejectedAsync);
+
+            for (int i = 1; i <= 10; i++)
+            {
+                JobProcessor(i); // simulate sending requests
+                Thread.Sleep(500); // with delays between each request
+            }
+
+            void JobProcessor(int num) // 
+            {
+                Console.WriteLine($"Execution slots: {bulkheadPolicyAsync.BulkheadAvailableCount}, Queue Slots: {bulkheadPolicyAsync.QueueAvailableCount}");
+                tasks.Add(bulkheadPolicyAsync.ExecuteAsync(async () => await complexCode.SomeSlowComplexProcessAsync(num)));
+            }
+
+            #endregion
+
+            try
+            {
+                await Task.WhenAll(tasks);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\nSome bulkhead tasks failed with exception: {ex.Message}\n");
+            }
+
             for (int loop = 0; loop < 10; loop++)
             {
-                var result = bulkheadPolicyAsync.ExecuteAsync( async () => await errorProneCode.SomeSlowComplexProcessAsync());
+                Console.WriteLine($"Task {loop}: {tasks[loop].Status}");
             }
-           
-            #endregion
         }
 
         private static Task OnBulkheadRejectedAsync(Context context)
         {
-            Console.WriteLine("Execution and queue slots full. Requests will be rejected.");
+            Console.WriteLine("\t\t\t\tExecution and queue slots full. Requests will be rejected.");
             return Task.CompletedTask;
         }
 
@@ -305,20 +326,20 @@ namespace PollyTryDemo
         {
             ErrorProneCode errorProneCode = new ErrorProneCode();
             #region wrap
-        
-            RetryPolicy<Status> retryPolicy = Policy.HandleResult<Status>(s => s!= Status.Success)
+
+            RetryPolicy<Status> retryPolicy = Policy.HandleResult<Status>(s => s != Status.Success)
     .Retry(3, (response, retryCount) =>
     {
         Console.WriteLine($"Received a response of {response.Result}, retrying {retryCount}.");
     });
 
-            var fallbackPolicy = Policy.HandleResult<Status>( s => s==Status.Fail)
+            var fallbackPolicy = Policy.HandleResult<Status>(s => s == Status.Fail)
                 .Fallback(() => Status.Unknown);
-    
+
             var wrapPolicy = Policy.Wrap(fallbackPolicy, retryPolicy);
 
             Status result = wrapPolicy.Execute(() => errorProneCode.GetOtherStatus());
-            
+
             Console.WriteLine($"Status: {result}.");
 
             #endregion
