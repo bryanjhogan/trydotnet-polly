@@ -1,6 +1,6 @@
 # Bulkhead Isolation
 
-The Bulkhead Isolation policy lets you restrict the amount of resources any part of your application can use. Through the use of execution and queue slots you can limit the maximum number of requests being executed in parallel and maximum number of queued requests. 
+The Bulkhead Isolation policy lets you restrict the amount of resources any part of your application can use. Using execution and queue slots you can limit the maximum number of requests being executed in parallel and maximum number of queued requests.
 
 ``` cs --region bulkhead --source-file .\src\Program.cs --project .\src\PollyDemo.csproj 
 ```

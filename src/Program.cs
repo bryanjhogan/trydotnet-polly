@@ -1,15 +1,10 @@
 ﻿using Polly;
-using Polly.CircuitBreaker;
 using Polly.Fallback;
 using Polly.Retry;
 using Polly.Caching.Memory;
 using Polly.Caching;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 using System.Threading;
-// using System.Runtime.Caching;
 using Microsoft.Extensions.Caching.Memory;
 using Polly.Bulkhead;
 using Polly.Timeout;
@@ -194,15 +189,9 @@ namespace PollyTryDemo
             #endregion
         }
 
-        private static Task OnTimeoutAsync(Context context, TimeSpan timeSpan, Task task)
-        {
-            Console.WriteLine("Polly timeout policy terminated request because it was taking too long.");
-            return Task.CompletedTask;
-        }
-
         private static void OnTimeout(Context context, TimeSpan timeSpan, Task task)
         {
-            Console.WriteLine("Polly timeout policy terminated request because it was taking too long.");
+            Console.WriteLine("Polly's timeout policy terminated request because it was taking too long.");
         }
         private static void OnBulkheadRejected(Context context)
         {

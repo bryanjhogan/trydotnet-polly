@@ -8,7 +8,7 @@
 </p>
 <h1 align ="center">Try .NET Samples of Polly, the .NET Resilience Framework</h1>
 
-<h3 align ="center">Polly is a resilience framework for .NET, with it your applications can easily tolerate transient faults and longer outages in remote systems or infrastructure. With just a few lines of code your application will be far more robust and reliable.</h3>
+<h3 align ="center">Polly is a resilience framework for .NET, with it your applications will easily tolerate transient faults and longer outages in remote systems or infrastructure. With just a few lines of code your application will be far more robust and reliable.</h3>
 
 ### Table of Content 
 - [Before you add Polly](lettingItFail.md)
