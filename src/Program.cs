@@ -69,9 +69,9 @@ namespace PollyTryDemo
         {
             ErrorProneCode errorProneCode = new ErrorProneCode();
             #region lettingItFail
-
+            // An exception is expected in this demo.
             int rowsWritten = errorProneCode.QueryTheDatabase();
-            Console.WriteLine($"Received response of {rowsWritten}.");
+            Console.WriteLine($"Received a response of {rowsWritten}.");
 
             #endregion
         }
@@ -89,7 +89,7 @@ namespace PollyTryDemo
 
             int result = retryPolicy.Execute(() => errorProneCode.QueryTheDatabase());
 
-            Console.WriteLine($"Received response of {result}");
+            Console.WriteLine($"Received a response of {result}.");
             #endregion
         }
 
@@ -106,7 +106,7 @@ namespace PollyTryDemo
 
             Status result = retryPolicy.Execute(() => errorProneCode.GetStatus());
 
-            Console.WriteLine($"Received response of {result}");
+            Console.WriteLine($"Received a response of {result}");
             #endregion
         }
 
@@ -124,7 +124,7 @@ namespace PollyTryDemo
 
             Status result = retryPolicy.Execute(() => errorProneCode.CallRemoteService());
 
-            Console.WriteLine($"Received response of {result},");
+            Console.WriteLine($"Received a response of {result}.");
             #endregion
         }
 
@@ -135,7 +135,7 @@ namespace PollyTryDemo
 
             RetryPolicy<Status> retryPolicy = Policy.HandleResult<Status>(s => s != Status.Success)
     .WaitAndRetry(3,
-    sleepDurationProvider: (retryCount) => TimeSpan.FromSeconds(retryCount),
+    sleepDurationProvider: (retryCount) => TimeSpan.FromSeconds(retryCount), // sleep a second longer after each retry
     onRetry: (response, delay, retryCount, ctx) =>
     {
         Console.WriteLine($"Received a response of {response.Result}.");
@@ -144,7 +144,7 @@ namespace PollyTryDemo
 
             Status result = retryPolicy.Execute(() => errorProneCode.GetStatus());
 
-            Console.WriteLine($"Received response of {result}.");
+            Console.WriteLine($"Received a response of {result}.");
             #endregion
         }
 
@@ -184,6 +184,7 @@ namespace PollyTryDemo
             ErrorProneCode errorProneCode = new ErrorProneCode();
 
             #region timeout
+            // A TimeoutRejectedException is expected in this demo.
 
             var timeoutPolicy = Policy.Timeout(1, TimeoutStrategy.Pessimistic, OnTimeout);
 
@@ -202,7 +203,7 @@ namespace PollyTryDemo
             ErrorProneCode errorProneCode = new ErrorProneCode();
 
             #region basicCircuitBreaker
-            Console.WriteLine("A BrokenCircuitException is expected in this demo.");
+            // A BrokenCircuitException is expected in this demo.
 
             var circuitBreakerPolicy = Policy
                 .HandleResult<Status>(r => r == Status.Fail)
@@ -224,8 +225,8 @@ namespace PollyTryDemo
             ErrorProneCode errorProneCode = new ErrorProneCode();
 
             #region advancedCircuitBreaker
-            Console.WriteLine("A BrokenCircuitException is expected in this demo.");
-
+            // A BrokenCircuitException is expected in this demo.
+            
             var advancedCircuitBreakerPolicy = Policy
                 .HandleResult<Status>(r => r == Status.Fail)
                 .AdvancedCircuitBreaker(.5, TimeSpan.FromSeconds(3), 6, TimeSpan.FromSeconds(5), OnBreak, OnReset, OnHalfOpen);
