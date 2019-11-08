@@ -7,4 +7,4 @@ Here we are trying to write to a database, but the request will fail, and an exc
 ``` cs --region lettingItFail --source-file .\src\Program.cs --project .\src\PollyDemo.csproj 
 ```
 
-#### Next: [Retrying When an Exception Occurs  &raquo;](../retryIfException.md) Previous: [Home &laquo;](../README.md)
+#### Next: [Retrying When an Exception Occurs  &raquo;](./retryIfException.md) Previous: [Home &laquo;](../README.md)
