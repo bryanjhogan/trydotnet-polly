@@ -6,4 +6,4 @@ The basic circuit breaker breaks the circuit if a set number of consecutive of e
 ``` cs --region basicCircuitBreaker --source-file .\src\Program.cs --project .\src\PollyDemo.csproj 
 ```
 
-#### Next: [Advanced Circuit Breaker &raquo;](../advancedCircuitBreaker.md) Previous: [Timeouts &laquo;](../timeout.md)
+#### Next: [Advanced Circuit Breaker &raquo;](advancedCircuitBreaker.md) Previous: [Timeouts &laquo;](timeout.md)

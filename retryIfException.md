@@ -10,4 +10,4 @@ Note how you execute the unreliable code inside the policy. `retryPolicy.Execute
 ``` cs --region retryIfException --source-file .\src\Program.cs --project .\src\PollyDemo.csproj 
 ```
 
-#### Next: [Retrying Based on a Result  &raquo;](./retryIfIncorrectStatus.md) Previous: [Before You Add Polly &laquo;](../lettingItFail.md)
+#### Next: [Retrying Based on a Result  &raquo;](retryIfIncorrectStatus.md) Previous: [Before You Add Polly &laquo;](lettingItFail.md)

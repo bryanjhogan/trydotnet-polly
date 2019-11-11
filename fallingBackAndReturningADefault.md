@@ -6,4 +6,4 @@ Sometimes it makes sense to return a default or a safe value from a fallback. In
 ``` cs --region fallingBackAndReturningADefault --source-file .\src\Program.cs --project .\src\PollyDemo.csproj 
 ```
 
-#### Next: [Timeouts &raquo;](../timeout.md) Previous: [Fallbacks 1 &laquo;](../fallingBack.md)
+#### Next: [Timeouts &raquo;](timeout.md) Previous: [Fallbacks 1 &laquo;](fallingBack.md)

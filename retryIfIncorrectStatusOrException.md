@@ -8,4 +8,4 @@ The policy retries the request up to three times if the result is not a `Status.
 ``` cs --region retryIfIncorrectStatusOrException --source-file .\src\Program.cs --project .\src\PollyDemo.csproj 
 ```
 
-#### Next: [Waiting Before Retrying  &raquo;](./waitAndRetry.md) Previous: [Retries Based on a Result &laquo;](../retryIfIncorrectStatus.md)
+#### Next: [Waiting Before Retrying  &raquo;](./waitAndRetry.md) Previous: [Retries Based on a Result &laquo;](retryIfIncorrectStatus.md)

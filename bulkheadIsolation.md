@@ -7,4 +7,4 @@ This policy is difficult to demonstrate in here, but this will give you idea of 
 ``` cs --region bulkhead --source-file .\src\Program.cs --project .\src\PollyDemo.csproj 
 ```
 
-#### Next: [Policy Wraps &raquo;](../wrap.md)  Previous: [Caching  &laquo;](../caching.md)
+#### Next: [Policy Wraps &raquo;](wrap.md)  Previous: [Caching  &laquo;](caching.md)

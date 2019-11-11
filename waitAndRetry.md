@@ -6,4 +6,4 @@ There are many scenarios where adding a delay before retrying a request will be 
 ``` cs --region waitAndRetry --source-file .\src\Program.cs --project .\src\PollyDemo.csproj 
 ```
 
-#### Next: [Fallbacks 1 &raquo;](../fallingBack.md) Previous: [Combining Result and Exception Based Retries &laquo;](../retryIfIncorrectStatusOrException.md)
+#### Next: [Fallbacks 1 &raquo;](fallingBack.md) Previous: [Combining Result and Exception Based Retries &laquo;](retryIfIncorrectStatusOrException.md)
