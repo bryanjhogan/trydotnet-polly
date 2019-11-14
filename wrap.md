@@ -5,4 +5,4 @@ Policy wraps let you combine multiple polices together in a nested fashion. This
 ``` cs --region wrap --source-file .\src\Program.cs --project .\src\PollyDemo.csproj 
 ```
 
-#### Previous: [Bulkhead Isolation &laquo;](../bulkheadIsolation.md)
+#### Previous: [Bulkhead Isolation &laquo;](bulkheadIsolation.md)

@@ -8,4 +8,4 @@ This example "pages" an admin but you can do anything you want.
 ``` cs --region fallingBack --source-file .\src\Program.cs --project .\src\PollyDemo.csproj 
 ```
 
-#### Next: [Fallbacks 2 &raquo;](../fallingBackAndReturningADefault.md) Previous: [Waiting Before Retrying &laquo;](../waitAndRetry.md)
+#### Next: [Fallbacks 2 &raquo;](fallingBackAndReturningADefault.md) Previous: [Waiting Before Retrying &laquo;](waitAndRetry.md)
